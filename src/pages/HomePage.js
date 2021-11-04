@@ -1,13 +1,12 @@
 import React from 'react';
 import Navbar from "../Components/Navbar";
-import MovieApp from "./MovieApp";
+import Main from "../Components/Main";
 
 const HomePage = () => {
     return (
         <>
             <Navbar/>
-            <MovieApp/>
-
+            <Main/>
         </>
     );
 };
