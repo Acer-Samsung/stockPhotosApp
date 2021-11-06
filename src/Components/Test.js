@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {LightgalleryProvider, LightgalleryItem} from "react-lightgallery";
-import {Link} from "react-router-dom";
 import {Box, Button, Grid} from "@mui/material";
-import Navbar from "./Navbar";
+import Loader from "./Tools/Loader";
 
 const Test = (props) => {
     console.log(props)
@@ -15,16 +13,7 @@ const Test = (props) => {
 
 
     const [photosSizes, setPhotosSizes] = useState([]);
-    const getSize = (photoId) => {
-        axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=${ApiKey}&photo_id=${photoId}&format=json&nojsoncallback=1`)
-            .then(res => {
-                setPhotosSizes(res.data.sizes.size)
-            }).catch((err) => {
-            console.log(err)
-        })
-    }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     function getsize() {
         return new Promise((resolve, reject) => {
             axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=${ApiKey}&photo_id=${photoId}&format=json&nojsoncallback=1`)
@@ -37,6 +26,9 @@ const Test = (props) => {
                 console.log(err)
                 reject("kitob")
             })
+                .finally(()=>{
+                    setIsLoading(false)
+                })
 
 
         })
@@ -45,15 +37,6 @@ const Test = (props) => {
     useEffect(() => {
         getsize();
     }, [])
-    const getPdf = (url) => {
-        // const url = BASE_URL + 'excel/productCountByWarehouse'
-        const link = document.createElement('a');
-        link.href = url;
-        // console.log(new Date(), "DATE")
-        link.setAttribute('download', ".jpg"); //or any other extension
-        document.body.appendChild(link);
-        link.click();
-    }
 
     function downloadImage(src) {
         const img = new Image();
@@ -75,28 +58,30 @@ const Test = (props) => {
         };
     }
 
+    const [isLoading,setIsLoading] = useState(true);
     return (
 
         <div>
-            <Navbar/>
+            {
+                isLoading ? <Loader/> : <Grid container marginTop={10}>
+                    <Grid item xs={"12"} sm={"12"} md={"12"} lg={"6"} xl={"6"}>
+                        <Box style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                            <img src={photosSizes.length > 0 ? photosSizes[7].source : ""} alt="404"/>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={"12"} sm={"12"} md={"12"} lg={"6"} xl={"6"}>
+                        <Box display={"flex"} flexDirection={"column"} paddingX={2}>
+                            {photosSizes.map((item) => (
+                                <Button style={{margin: "5px 0"}} variant={"outlined"} onClick={() => {
+                                    downloadImage(item.source)
+                                }}>{item.label} ({item.width}x{item.height})</Button>
+                            ))}
+                        </Box>
 
-            <Grid container marginTop={10}>
-                <Grid item xs={"12"} sm={"12"} md={"12"} lg={"6"} xl={"6"}>
-                    <Box style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        <img src={photosSizes.length > 0 ? photosSizes[7].source : ""} alt="404"/>
-                    </Box>
+                    </Grid>
                 </Grid>
-                <Grid item xs={"12"} sm={"12"} md={"12"} lg={"6"} xl={"6"}>
-                    <Box display={"flex"} flexDirection={"column"} paddingX={2}>
-                        {photosSizes.map((item) => (
-                            <Button style={{margin: "5px 0"}} variant={"outlined"} onClick={() => {
-                                downloadImage(item.source)
-                            }}>{item.label}</Button>
-                        ))}
-                    </Box>
+            }
 
-                </Grid>
-            </Grid>
         </div>
     );
 };
