@@ -4,9 +4,9 @@ import {Box, Button, Grid} from "@mui/material";
 import Loader from "./Tools/Loader";
 
 const Test = (props) => {
-    console.log(props)
+    // console.log(props)
     const screen = window.screen;
-    console.log(screen)
+    // console.log(screen)
     var reg = /\d+/;
     let photoId = props.match.url.toString().match(reg);
     const ApiKey = process.env.REACT_APP_API_KEY;
@@ -33,9 +33,16 @@ const Test = (props) => {
 
         })
     }
+    const getInfo = () => {
+      axios.get(` https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=${ApiKey}&photo_id=${photoId}&format=json&nojsoncallback=1`)
+          .then((res)=>{
+              console.log(res)
+          })
+    }
 
     useEffect(() => {
         getsize();
+        getInfo()
     }, [])
 
     function downloadImage(src) {

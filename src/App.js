@@ -5,6 +5,7 @@ import Test from "./Components/Test";
 import "lightgallery.js/dist/css/lightgallery.css";
 import {ThemeProvider} from "@mui/material";
 import {Theme} from "./Classes/Theme";
+import Errorpage from "./pages/Errorpage";
 
 
 export const ApiKey = process.env.REACT_APP_API_KEY;
@@ -20,6 +21,7 @@ function App() {
                 <Switch>
                     <Route exact path={"/"} component={HomePage}/>
                     <Route exact path={"/posts/:id"} component={Test}/>
+                    <Route component={Errorpage}/>
                 </Switch>
             </BrowserRouter>
 </ThemeProvider>

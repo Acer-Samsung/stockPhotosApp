@@ -1,0 +1,1 @@
+export const restrictedWords = ["sex","xxx","lesb","lesbian","gay","dick","penis","vulva","bastard","orgasm","porn"]
